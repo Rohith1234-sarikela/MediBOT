@@ -2,28 +2,23 @@ from flask import Flask, render_template, request
 import numpy as np
 import pandas as pd
 import pickle
-from sklearn.preprocessing import LabelEncoder
-from sklearn.svm import SVC  # Assuming SVC is the model used
+from sklearn.svm import SVC
 
 app = Flask(__name__)
 
 # Load datasets
-symptomsdataset = pd.read_csv("datasets/symtoms_df.csv")  # Note typo in file name
+symptomsdataset = pd.read_csv("datasets/symtoms_df.csv")  # Ensure file exists
 discriptiondataset = pd.read_csv("datasets/description.csv")
 medicationdataset = pd.read_csv("datasets/medications.csv")
 dietsdataset = pd.read_csv("datasets/diets.csv")
 precautiondataset = pd.read_csv("datasets/precautions_df.csv")
-workoutdataset = pd.read_csv("datasets/workout_df.csv")
+workoutdataset = pd.read_csv("datasets/workout_df.csv")  # ✅ Corrected capitalization
 
-
-# Load the trained model (assuming it's saved as 'svc_model.pkl')
+# Load trained model
 with open("models/svc.pkl", "rb") as file:
     model = pickle.load(file)
 
-# Load the LabelEncoder (assuming it's saved as 'label_encoder.pkl')
-
-
-# Define symptoms dictionary and diseases list
+# Symptoms dictionary and disease list
 symptoms_dict = {
     'itching': 0, 'skin_rash': 1, 'nodal_skin_eruptions': 2, 'continuous_sneezing': 3, 'shivering': 4,
     'chills': 5, 'joint_pain': 6, 'stomach_pain': 7, 'acidity': 8, 'ulcers_on_tongue': 9, 'muscle_wasting': 10,
@@ -82,12 +77,12 @@ def get_predicted(patient_symptoms):
         return None, "No valid symptoms entered. Please try again."
     
     prediction = model.predict([input_vector])[0]
-    return diseases_list[prediction], None
+    return diseases_list.get(prediction, "Unknown disease"), None
 
-# Helper function to fetch disease details
+# Helper function
 def helper(disease):
     descr = discriptiondataset[discriptiondataset["Disease"] == disease]["Description"]
-    desc = " ".join([w for w in descr]) if not descr.empty else "Description not available."
+    desc = " ".join(descr) if not descr.empty else "Description not available."
 
     pre = precautiondataset[precautiondataset["Disease"] == disease][["Precaution_1", "Precaution_2", "Precaution_3", "Precaution_4"]]
     pre = [item for sublist in pre.values.tolist() for item in sublist if pd.notna(item)] if not pre.empty else []
@@ -98,7 +93,7 @@ def helper(disease):
     diet = dietsdataset[dietsdataset["Disease"] == disease]["Diet"].tolist()
     diet = diet if diet else ["Follow a balanced diet."]
 
-    workout = Workoutdataset[Workoutdataset["disease"] == disease]["workout"].tolist()
+    workout = workoutdataset[workoutdataset["disease"] == disease]["workout"].tolist()
     workout = workout if workout else ["Consult a healthcare professional for exercise recommendations."]
 
     return desc, pre, med, diet, workout
