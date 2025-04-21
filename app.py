@@ -8,15 +8,16 @@ from sklearn.svm import SVC  # Assuming SVC is the model used
 app = Flask(__name__)
 
 # Load datasets
-Symtomsdataset=pd.read_csv(r"C:\Users\91954\Desktop\Medical recommandation system\datasets\symtoms_df.csv")
-discriptiondataset=pd.read_csv(r"C:\Users\91954\Desktop\Medical recommandation system\datasets\description.csv")
-medicationdataset=pd.read_csv(r"C:\Users\91954\Desktop\Medical recommandation system\datasets\medications.csv")
-dietsdataset=pd.read_csv(r"C:\Users\91954\Desktop\Medical recommandation system\datasets\diets.csv")
-precautiondataset=pd.read_csv(r"C:\Users\91954\Desktop\Medical recommandation system\datasets\precautions_df.csv")
-Workoutdataset=pd.read_csv(r"C:\Users\91954\Desktop\Medical recommandation system\datasets\workout_df.csv")
+symptomsdataset = pd.read_csv("datasets/symtoms_df.csv")  # Note typo in file name
+discriptiondataset = pd.read_csv("datasets/description.csv")
+medicationdataset = pd.read_csv("datasets/medications.csv")
+dietsdataset = pd.read_csv("datasets/diets.csv")
+precautiondataset = pd.read_csv("datasets/precautions_df.csv")
+workoutdataset = pd.read_csv("datasets/workout_df.csv")
+
 
 # Load the trained model (assuming it's saved as 'svc_model.pkl')
-with open(r"C:\Users\91954\Desktop\Medical recommandation system\models\svc.pkl", "rb") as file:
+with open("models/svc.pkl", "rb") as file:
     model = pickle.load(file)
 
 # Load the LabelEncoder (assuming it's saved as 'label_encoder.pkl')
